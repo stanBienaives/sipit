@@ -7,12 +7,20 @@ defmodule PB8 do
   end
 
 
+  def resolve_the_easy_way( number, size ) do
+    number
+    |> build_list
+    |> Enum.chunk(size, 1)
+    |> Enum.max_by( fn chunk -> Enum.reduce( chunk , &(&1*&2) ) end)
+    |> Enum.reduce( &(&1*&2))
+  end
+
   def resolve(number, size) do
     { _, max } = number
     |> build_list
     |> Enum.reduce {[] , 0 }, fn elem, { buffer, max } ->
       last = List.last( buffer ) || 0
-      new_buffer = increment_buffer( buffer, elem, size )
+      new_buffer = next_buffer( buffer, elem, size )
       { new_buffer, max( last , max ) }
     end
     max
@@ -28,7 +36,7 @@ defmodule PB8 do
 
 
 
-  def increment_buffer(buffer, elem, size ) do
+  def next_buffer(buffer, elem, size ) do
     buffer = [ 1 | buffer ]
     if( length( buffer ) > size ) do
       buffer = pop!( buffer)
@@ -64,6 +72,8 @@ number =  "73167176531330624919225119674426574742355349194934
 Report.time( PB8, :resolve, [ number, 5 ] )
 Report.time( PB8, :resolve, [ number, 13 ] )
 
+Report.time( PB8, :resolve_the_easy_way, [ number, 5 ] )
+Report.time( PB8, :resolve_the_easy_way, [ number, 13 ] )
 
 
 
