@@ -10,7 +10,9 @@ defmodule Report do
 
 
   def header( module ) do
-    exercice = module |> to_string |> String.last
+    exercice = module |> to_string
+    exercice = Regex.scan( ~r{([0-9]+)}, exercice )|> hd |> List.last
+
     IO.puts """
 
     ---------------------------
