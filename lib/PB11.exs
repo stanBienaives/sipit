@@ -47,7 +47,6 @@ defmodule PB11 do
     end
     Stream.iterate( start, &( next_box( &1, direction ) ) )
     |> Enum.take_while(&( !is_nil(&1) ))
-    #|> Enum.take( 484 )
     |> Enum.map( &(get_value( grid, &1 ) ) )
   end
 

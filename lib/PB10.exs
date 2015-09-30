@@ -1,6 +1,7 @@
 defmodule PB10 do
   def resolve do
-    Primes.primes_to(2_000_000)
+    Primes.up_to(2_000_000)
+    |> Enum.reverse
     |> Enum.reduce( &(&1 + &2) )
   end
 end

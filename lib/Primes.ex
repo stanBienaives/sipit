@@ -1,7 +1,7 @@
 defmodule Primes do
 
   def start do
-    Agent.start_link fn -> [] end, name: __MODULE__
+    Agent.start_link fn -> [2] end, name: __MODULE__
   end
 
   def stop do
@@ -12,9 +12,30 @@ defmodule Primes do
     Agent.get_and_update( __MODULE__, __MODULE__, :_next_prime,[])
   end
 
-  def primes_to( max) do
+  def all_below(n) do
+    Agent.get_and_update(__MODULE__, fn primes = [ h | t ] ->
+      if( h >= n ) do
+        { Enum.reject(primes, &(&1 > n )) , primes }
+      else
+        p = up_to(n)
+        { p , p }
+      end
+    end, 50000)
+  end
+
+
+  #def primes_to( existing_primes = [h|t], max ) when h > max, do: Enum.take_while( existing_primes, &(&1 < max ) )
+  #def primes_to( existing_primes = [h|t] , max ) do
+    #sqrt = Float.ceil( :math.sqrt(max) ) |> round
+    #Enum.to_list((h+1)..max) 
+    #|> do_primes( existing_primes, sqrt)
+    ##|> Enum.concat( existing_primes )
+    
+  #end
+
+  def up_to( max) do
     sqrt = Float.ceil( :math.sqrt(max) ) |> round
-    Enum.to_list(2..max) |> do_primes([] , sqrt)
+    Enum.to_list(2..max) |> do_primes([] , sqrt) |> Enum.reverse
   end
 
   defp do_primes([ candidate | rest ], primes, sqrt) when (candidate > sqrt),do: Enum.reverse(primes) ++ [ candidate | rest ]
